@@ -1,7 +1,16 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 
-// Map database format to frontend format
+const DAY_ORDER = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء"];
+const GRADE_ORDER = [
+  "الصف الأول الابتدائي",
+  "الصف الثاني الابتدائي", 
+  "الصف الثالث الابتدائي",
+  "الصف الرابع الابتدائي",
+  "الصف الخامس الابتدائي",
+  "الصف السادس الابتدائي"
+];
+
 function mapExamFromDB(dbExam: any) {
   return {
     id: dbExam.id,
@@ -23,7 +32,6 @@ function mapExamFromDB(dbExam: any) {
   };
 }
 
-// Map frontend format to database format
 function mapExamToDB(exam: any) {
   return {
     day: exam.day,
@@ -42,6 +50,20 @@ function mapExamToDB(exam: any) {
   };
 }
 
+function sortExams(exams: any[]) {
+  return [...exams].sort((a, b) => {
+    const dayA = DAY_ORDER.indexOf(a.day);
+    const dayB = DAY_ORDER.indexOf(b.day);
+    if (dayA !== dayB) return dayA - dayB;
+    
+    const gradeA = GRADE_ORDER.indexOf(a.grade);
+    const gradeB = GRADE_ORDER.indexOf(b.grade);
+    if (gradeA !== gradeB) return gradeA - gradeB;
+    
+    return a.subject.localeCompare(b.subject, 'ar');
+  });
+}
+
 export function useExams() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -52,7 +74,7 @@ export function useExams() {
       const response = await fetch('/api/exams');
       if (!response.ok) throw new Error('Failed to fetch exams');
       const data = await response.json();
-      return data.map(mapExamFromDB);
+      return sortExams(data.map(mapExamFromDB));
     },
   });
 
@@ -85,7 +107,34 @@ export function useExams() {
       if (!response.ok) throw new Error('Failed to update exam');
       return response.json();
     },
-    onSuccess: () => {
+    onMutate: async ({ examId, step, value }) => {
+      await queryClient.cancelQueries({ queryKey: ['exams'] });
+      const previousExams = queryClient.getQueryData(['exams']);
+      
+      queryClient.setQueryData(['exams'], (old: any[]) => {
+        if (!old) return old;
+        return old.map(exam => {
+          if (exam.id === examId) {
+            return {
+              ...exam,
+              steps: {
+                ...exam.steps,
+                [step]: value
+              }
+            };
+          }
+          return exam;
+        });
+      });
+      
+      return { previousExams };
+    },
+    onError: (err, variables, context) => {
+      if (context?.previousExams) {
+        queryClient.setQueryData(['exams'], context.previousExams);
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['exams'] });
     },
   });
