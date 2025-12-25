@@ -158,9 +158,21 @@ export function AddExamDialog({ onAdd }: AddExamDialogProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>الصف</FormLabel>
-                  <FormControl>
-                    <Input placeholder="مثال: الأول المتوسط" {...field} />
-                  </FormControl>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="اختر الصف" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="الصف الأول الابتدائي">الصف الأول الابتدائي</SelectItem>
+                      <SelectItem value="الصف الثاني الابتدائي">الصف الثاني الابتدائي</SelectItem>
+                      <SelectItem value="الصف الثالث الابتدائي">الصف الثالث الابتدائي</SelectItem>
+                      <SelectItem value="الصف الرابع الابتدائي">الصف الرابع الابتدائي</SelectItem>
+                      <SelectItem value="الصف الخامس الابتدائي">الصف الخامس الابتدائي</SelectItem>
+                      <SelectItem value="الصف السادس الابتدائي">الصف السادس الابتدائي</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -172,9 +184,19 @@ export function AddExamDialog({ onAdd }: AddExamDialogProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>المادة</FormLabel>
-                  <FormControl>
-                    <Input placeholder="مثال: الرياضيات" {...field} />
-                  </FormControl>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="اختر المادة" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="الرياضيات">الرياضيات</SelectItem>
+                      <SelectItem value="لغتي">لغتي</SelectItem>
+                      <SelectItem value="العلوم">العلوم</SelectItem>
+                      <SelectItem value="اللغة الإنجليزية">اللغة الإنجليزية</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
