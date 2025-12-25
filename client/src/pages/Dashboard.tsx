@@ -2,7 +2,7 @@ import { Layout } from "@/components/layout/Layout";
 import { ExamTable } from "@/components/exam/ExamTable";
 import { AddExamDialog } from "@/components/exam/AddExamDialog";
 import { useExams } from "@/hooks/use-exams";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Activity, CheckCircle, Clock } from "lucide-react";
 
 export default function Dashboard() {
@@ -12,23 +12,31 @@ export default function Dashboard() {
   const completedSteps = exams.reduce((acc, exam) => {
     return acc + Object.values(exam.steps).filter(Boolean).length;
   }, 0);
-  const totalSteps = totalExams * 8; // 8 steps per exam
+  const totalSteps = totalExams * 8;
   const progress = totalSteps === 0 ? 0 : Math.round((completedSteps / totalSteps) * 100);
 
   return (
     <Layout>
       <div className="space-y-8 animate-in fade-in duration-500">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight text-primary">متابعة أعمال اختبارات الفصل الدراسي الأول 1447 - مدرسة الرياض الابتدائية</h1>
-            <p className="text-muted-foreground mt-1">
-              متابعة سير عمليات الاختبارات النهائية والتحريرية
-            </p>
+        <div className="flex flex-col gap-6">
+          <div className="flex items-center gap-6">
+            <img 
+              src="/logo.png" 
+              alt="شعار الهيئة الملكية" 
+              className="h-20 w-auto"
+            />
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-primary">متابعة أعمال اختبارات الفصل الدراسي الأول 1447</h1>
+              <p className="text-lg text-muted-foreground mt-1">
+                مدرسة الرياض الابتدائية
+              </p>
+            </div>
           </div>
-          <AddExamDialog onAdd={addExam} />
+          <div className="flex justify-end">
+            <AddExamDialog onAdd={addExam} />
+          </div>
         </div>
 
-        {/* Stats Cards */}
         <div className="grid gap-4 md:grid-cols-3">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -79,7 +87,6 @@ export default function Dashboard() {
           </Card>
         </div>
 
-        {/* Main Table */}
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">جدول المتابعة اليومي</h2>
           <ExamTable 

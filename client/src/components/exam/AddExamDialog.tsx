@@ -107,7 +107,6 @@ export function AddExamDialog({ onAdd }: AddExamDialogProps) {
                         <SelectItem value="الاثنين">الاثنين</SelectItem>
                         <SelectItem value="الثلاثاء">الثلاثاء</SelectItem>
                         <SelectItem value="الأربعاء">الأربعاء</SelectItem>
-                        <SelectItem value="الخميس">الخميس</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
@@ -137,8 +136,8 @@ export function AddExamDialog({ onAdd }: AddExamDialogProps) {
                             const dayNames = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
                             const arabicDay = dayNames[dayOfWeek];
                             
-                            // Only set if it's a school day
-                            if (["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس"].includes(arabicDay)) {
+                            // Only set if it's a school day (Sunday to Wednesday)
+                            if (["الأحد", "الاثنين", "الثلاثاء", "الأربعاء"].includes(arabicDay)) {
                                 form.setValue("day", arabicDay);
                             }
                           } else {
