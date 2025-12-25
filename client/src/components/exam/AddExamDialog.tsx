@@ -128,12 +128,18 @@ export function AddExamDialog({ onAdd }: AddExamDialogProps) {
                             // @ts-ignore
                             field.onChange(date.format("YYYY/MM/DD"));
                             
-                            // Auto-set day name if possible
+                            // Get the JavaScript Date and calculate day of week
                             // @ts-ignore
-                            const dayName = date.format("dddd");
-                            // Simple mapping if needed, but the library returns Arabic names directly usually
-                            if (["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس"].includes(dayName)) {
-                                form.setValue("day", dayName);
+                            const jsDate = date.toDate();
+                            const dayOfWeek = jsDate.getDay();
+                            
+                            // Map JavaScript day (0=Sunday) to Arabic day names
+                            const dayNames = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
+                            const arabicDay = dayNames[dayOfWeek];
+                            
+                            // Only set if it's a school day
+                            if (["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس"].includes(arabicDay)) {
+                                form.setValue("day", arabicDay);
                             }
                           } else {
                             field.onChange("");
