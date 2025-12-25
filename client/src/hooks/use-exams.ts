@@ -1,66 +1,122 @@
-import { useState, useEffect } from 'react';
-import { ExamRecord, MOCK_DATA } from '@/lib/types';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 
-const STORAGE_KEY = 'mutabaa_exams_data_v1';
+// Map database format to frontend format
+function mapExamFromDB(dbExam: any) {
+  return {
+    id: dbExam.id,
+    day: dbExam.day,
+    date: dbExam.date,
+    grade: dbExam.grade,
+    subject: dbExam.subject,
+    source: dbExam.source,
+    steps: {
+      questionsExport: dbExam.questionsExport,
+      photocopying: dbExam.photocopying,
+      grading: dbExam.grading,
+      reviewing: dbExam.reviewing,
+      dataEntry: dbExam.dataEntry,
+      auditing: dbExam.auditing,
+      randomSample: dbExam.randomSample,
+      reportSent: dbExam.reportSent,
+    }
+  };
+}
+
+// Map frontend format to database format
+function mapExamToDB(exam: any) {
+  return {
+    day: exam.day,
+    date: exam.date,
+    grade: exam.grade,
+    subject: exam.subject,
+    source: exam.source,
+    questionsExport: exam.steps?.questionsExport || false,
+    photocopying: exam.steps?.photocopying || false,
+    grading: exam.steps?.grading || false,
+    reviewing: exam.steps?.reviewing || false,
+    dataEntry: exam.steps?.dataEntry || false,
+    auditing: exam.steps?.auditing || false,
+    randomSample: exam.steps?.randomSample || false,
+    reportSent: exam.steps?.reportSent || false,
+  };
+}
 
 export function useExams() {
-  const [exams, setExams] = useState<ExamRecord[]>([]);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
-  // Load from local storage on mount
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      try {
-        setExams(JSON.parse(stored));
-      } catch (e) {
-        console.error("Failed to parse stored exams", e);
-        setExams(MOCK_DATA);
-      }
-    } else {
-      setExams(MOCK_DATA);
-    }
-  }, []);
+  const { data: exams = [] } = useQuery({
+    queryKey: ['exams'],
+    queryFn: async () => {
+      const response = await fetch('/api/exams');
+      if (!response.ok) throw new Error('Failed to fetch exams');
+      const data = await response.json();
+      return data.map(mapExamFromDB);
+    },
+  });
 
-  // Save to local storage whenever exams change
-  useEffect(() => {
-    if (exams.length > 0) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(exams));
-    }
-  }, [exams]);
+  const addExamMutation = useMutation({
+    mutationFn: async (exam: any) => {
+      const response = await fetch('/api/exams', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(mapExamToDB(exam)),
+      });
+      if (!response.ok) throw new Error('Failed to create exam');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['exams'] });
+      toast({
+        title: "تمت الإضافة",
+        description: "تم إضافة الاختبار الجديد بنجاح",
+      });
+    },
+  });
 
-  const addExam = (exam: Omit<ExamRecord, 'id'>) => {
-    const newExam = { ...exam, id: Math.random().toString(36).substr(2, 9) };
-    setExams(prev => [newExam, ...prev]);
-    toast({
-      title: "تمت الإضافة",
-      description: "تم إضافة الاختبار الجديد بنجاح",
-    });
+  const updateStepMutation = useMutation({
+    mutationFn: async ({ examId, step, value }: { examId: string; step: string; value: boolean }) => {
+      const response = await fetch(`/api/exams/${examId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ [step]: value }),
+      });
+      if (!response.ok) throw new Error('Failed to update exam');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['exams'] });
+    },
+  });
+
+  const deleteExamMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const response = await fetch(`/api/exams/${id}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error('Failed to delete exam');
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['exams'] });
+      toast({
+        title: "تم الحذف",
+        description: "تم حذف سجل الاختبار",
+        variant: "destructive"
+      });
+    },
+  });
+
+  const addExam = (exam: any) => {
+    addExamMutation.mutate(exam);
   };
 
-  const updateStep = (examId: string, step: keyof ExamRecord['steps'], value: boolean) => {
-    setExams(prev => prev.map(exam => {
-      if (exam.id === examId) {
-        return {
-          ...exam,
-          steps: {
-            ...exam.steps,
-            [step]: value
-          }
-        };
-      }
-      return exam;
-    }));
+  const updateStep = (examId: string, step: string, value: boolean) => {
+    updateStepMutation.mutate({ examId, step, value });
   };
 
   const deleteExam = (id: string) => {
-    setExams(prev => prev.filter(e => e.id !== id));
-    toast({
-      title: "تم الحذف",
-      description: "تم حذف سجل الاختبار",
-      variant: "destructive"
-    });
+    deleteExamMutation.mutate(id);
   };
 
   return {
