@@ -20,9 +20,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus } from "lucide-react";
+import { Plus, CalendarIcon } from "lucide-react";
 import { useState } from "react";
 import { ExamRecord } from "@/lib/types";
+import DatePicker from "react-multi-date-picker";
+import arabic from "react-date-object/calendars/arabic";
+import arabic_ar from "react-date-object/locales/arabic_ar";
 
 const formSchema = z.object({
   day: z.string().min(1, "اليوم مطلوب"),
@@ -115,10 +118,33 @@ export function AddExamDialog({ onAdd }: AddExamDialogProps) {
                 control={form.control}
                 name="date"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>التاريخ</FormLabel>
+                  <FormItem className="flex flex-col">
+                    <FormLabel>التاريخ (هجري)</FormLabel>
                     <FormControl>
-                      <Input placeholder="1447/01/01" {...field} />
+                      <DatePicker
+                        value={field.value}
+                        onChange={(date) => {
+                          if (date) {
+                            // @ts-ignore
+                            field.onChange(date.format("YYYY/MM/DD"));
+                            
+                            // Auto-set day name if possible
+                            // @ts-ignore
+                            const dayName = date.format("dddd");
+                            // Simple mapping if needed, but the library returns Arabic names directly usually
+                            if (["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس"].includes(dayName)) {
+                                form.setValue("day", dayName);
+                            }
+                          } else {
+                            field.onChange("");
+                          }
+                        }}
+                        calendar={arabic}
+                        locale={arabic_ar}
+                        calendarPosition="bottom-right"
+                        inputClass="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        containerClassName="w-full"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
