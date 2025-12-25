@@ -20,7 +20,7 @@ export default function Dashboard() {
       <div className="space-y-8 animate-in fade-in duration-500">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-primary">لوحة المتابعة</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-primary">متابعة أعمال اختبارات الفصل الدراسي الأول 1447 - مدرسة الرياض الابتدائية</h1>
             <p className="text-muted-foreground mt-1">
               متابعة سير عمليات الاختبارات النهائية والتحريرية
             </p>

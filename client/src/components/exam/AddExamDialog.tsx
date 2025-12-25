@@ -218,6 +218,7 @@ export function AddExamDialog({ onAdd }: AddExamDialogProps) {
                       <SelectItem value="معلم المادة">معلم المادة</SelectItem>
                       <SelectItem value="مركزي">مركزي</SelectItem>
                       <SelectItem value="مشترك">مشترك</SelectItem>
+                      <SelectItem value="بنك الأسئلة">بنك الأسئلة</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
