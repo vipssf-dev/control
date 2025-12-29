@@ -1,8 +1,16 @@
+/**
+ * Riyadh School Platform
+ * System Type : School Management System
+ * Owner       : صالح سفر الغامدي
+ * Year        : 1447H / 2025
+ * © All Rights Reserved
+ * Unauthorized use or redistribution is prohibited.
+ */
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
-
+// 🔐 Ownership Protection
 const app = express();
 const httpServer = createServer(app);
 
