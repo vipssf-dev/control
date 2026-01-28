@@ -19,18 +19,11 @@ export default function Dashboard() {
     <Layout>
       <div className="space-y-8 animate-in fade-in duration-500">
         <div className="flex flex-col gap-6">
-          <div className="flex items-center gap-6">
-            <img 
-              src="/logo.png" 
-              alt="شعار الهيئة الملكية" 
-              className="h-20 w-auto"
-            />
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-primary">متابعة أعمال اختبارات الفصل الدراسي الأول 1447</h1>
-              <p className="text-lg text-muted-foreground mt-1">
-                مدرسة الرياض الابتدائية
-              </p>
-            </div>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight text-primary">متابعة أعمال اختبارات الفصل الدراسي الأول 1447</h1>
+            <p className="text-lg text-muted-foreground mt-1">
+              مدرسة الرياض الابتدائية
+            </p>
           </div>
           <div className="flex justify-end">
             <AddExamDialog onAdd={addExam} />

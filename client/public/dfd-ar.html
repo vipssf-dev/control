@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مخطط تدفق البيانات - نظام متابعة الاختبارات</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: #f8fafc;
+            padding: 40px;
+            color: #1e293b;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #0891b2;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        h2 {
+            text-align: center;
+            color: #64748b;
+            font-weight: 400;
+            margin-bottom: 40px;
+            font-size: 18px;
+        }
+        
+        .diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .entity {
+            background: #0891b2;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            min-width: 200px;
+        }
+        
+        .process {
+            background: #22c55e;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-align: center;
+            min-width: 180px;
+        }
+        
+        .datastore {
+            background: #f59e0b;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 0;
+            font-weight: 600;
+            text-align: center;
+            min-width: 200px;
+            border-top: 3px solid #d97706;
+            border-bottom: 3px solid #d97706;
+        }
+        
+        .arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .arrow::before {
+            content: '↓';
+            font-size: 24px;
+            color: #94a3b8;
+        }
+        
+        .row {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f1f5f9;
+            border-radius: 8px;
+        }
+        
+        .section h3 {
+            color: #475569;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .section ul {
+            list-style: none;
+            padding-right: 20px;
+        }
+        
+        .section li {
+            padding: 5px 0;
+            color: #64748b;
+        }
+        
+        .section li::before {
+            content: '•';
+            color: #0891b2;
+            margin-left: 10px;
+        }
+        
+        .legend {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .legend-box {
+            width: 30px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 20px;
+            }
+            .container {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>مخطط تدفق البيانات (DFD)</h1>
+        <h2>نظام متابعة أعمال الاختبارات - مدرسة الرياض الابتدائية</h2>
+        
+        <div class="diagram">
+            <div class="entity">المستخدم (المشرف)</div>
+            
+            <div class="arrow">إدخال بيانات الاختبار</div>
+            
+            <div class="process">1.0 إضافة اختبار جديد</div>
+            
+            <div class="arrow">حفظ البيانات</div>
+            
+            <div class="datastore">قاعدة بيانات الاختبارات</div>
+            
+            <div class="arrow">استرجاع البيانات</div>
+            
+            <div class="row">
+                <div class="process">2.0 عرض الاختبارات</div>
+                <div class="process">3.0 تحديث الإنجاز</div>
+                <div class="process">4.0 حذف اختبار</div>
+            </div>
+            
+            <div class="arrow">عرض النتائج</div>
+            
+            <div class="entity">واجهة المستخدم</div>
+        </div>
+        
+        <div class="section">
+            <h3>العمليات الرئيسية:</h3>
+            <ul>
+                <li><strong>1.0 إضافة اختبار:</strong> إدخال بيانات الاختبار (اليوم، التاريخ، الصف، المادة، المصدر)</li>
+                <li><strong>2.0 عرض الاختبارات:</strong> استرجاع وعرض جميع الاختبارات مرتبة حسب اليوم والصف</li>
+                <li><strong>3.0 تحديث الإنجاز:</strong> تحديث حالة خطوات المتابعة (التصوير، التصحيح، المراجعة...)</li>
+                <li><strong>4.0 حذف اختبار:</strong> إزالة سجل اختبار من النظام</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <h3>مخزن البيانات:</h3>
+            <ul>
+                <li><strong>قاعدة بيانات PostgreSQL:</strong> تخزين جميع بيانات الاختبارات وحالات الإنجاز</li>
+            </ul>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-box" style="background: #0891b2;"></div>
+                <span>كيان خارجي</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background: #22c55e; border-radius: 10px;"></div>
+                <span>عملية</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background: #f59e0b;"></div>
+                <span>مخزن بيانات</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

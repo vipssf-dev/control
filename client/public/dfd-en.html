@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Flow Diagram - Exam Tracking System</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            padding: 40px;
+            color: #1e293b;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #0891b2;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        h2 {
+            text-align: center;
+            color: #64748b;
+            font-weight: 400;
+            margin-bottom: 40px;
+            font-size: 18px;
+        }
+        
+        .diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .entity {
+            background: #0891b2;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            min-width: 200px;
+        }
+        
+        .process {
+            background: #22c55e;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-align: center;
+            min-width: 180px;
+        }
+        
+        .datastore {
+            background: #f59e0b;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 0;
+            font-weight: 600;
+            text-align: center;
+            min-width: 200px;
+            border-top: 3px solid #d97706;
+            border-bottom: 3px solid #d97706;
+        }
+        
+        .arrow {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        .arrow::before {
+            content: '↓';
+            font-size: 24px;
+            color: #94a3b8;
+        }
+        
+        .row {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f1f5f9;
+            border-radius: 8px;
+        }
+        
+        .section h3 {
+            color: #475569;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        
+        .section ul {
+            list-style: none;
+            padding-left: 20px;
+        }
+        
+        .section li {
+            padding: 5px 0;
+            color: #64748b;
+        }
+        
+        .section li::before {
+            content: '•';
+            color: #0891b2;
+            margin-right: 10px;
+        }
+        
+        .legend {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .legend-box {
+            width: 30px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 20px;
+            }
+            .container {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Data Flow Diagram (DFD)</h1>
+        <h2>Exam Tracking System - Al-Riyadh Primary School</h2>
+        
+        <div class="diagram">
+            <div class="entity">User (Supervisor)</div>
+            
+            <div class="arrow">Enter Exam Data</div>
+            
+            <div class="process">1.0 Add New Exam</div>
+            
+            <div class="arrow">Save Data</div>
+            
+            <div class="datastore">Exams Database</div>
+            
+            <div class="arrow">Retrieve Data</div>
+            
+            <div class="row">
+                <div class="process">2.0 Display Exams</div>
+                <div class="process">3.0 Update Progress</div>
+                <div class="process">4.0 Delete Exam</div>
+            </div>
+            
+            <div class="arrow">Display Results</div>
+            
+            <div class="entity">User Interface</div>
+        </div>
+        
+        <div class="section">
+            <h3>Main Processes:</h3>
+            <ul>
+                <li><strong>1.0 Add Exam:</strong> Enter exam data (Day, Date, Grade, Subject, Source)</li>
+                <li><strong>2.0 Display Exams:</strong> Retrieve and display all exams sorted by day and grade</li>
+                <li><strong>3.0 Update Progress:</strong> Update tracking step status (Photocopying, Grading, Review...)</li>
+                <li><strong>4.0 Delete Exam:</strong> Remove an exam record from the system</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <h3>Data Store:</h3>
+            <ul>
+                <li><strong>PostgreSQL Database:</strong> Stores all exam data and progress status</li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <h3>Data Flows:</h3>
+            <ul>
+                <li><strong>Input:</strong> Exam details (Day, Hijri Date, Grade Level, Subject, Question Source)</li>
+                <li><strong>Processing:</strong> CRUD operations on exam records</li>
+                <li><strong>Output:</strong> Sorted exam list with progress indicators</li>
+            </ul>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-box" style="background: #0891b2;"></div>
+                <span>External Entity</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background: #22c55e; border-radius: 10px;"></div>
+                <span>Process</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background: #f59e0b;"></div>
+                <span>Data Store</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
