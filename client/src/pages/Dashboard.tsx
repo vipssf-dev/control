@@ -94,6 +94,7 @@ export default function Dashboard({ semester = "1" }: DashboardProps) {
             exams={exams} 
             onUpdateStep={updateStep} 
             onDelete={deleteExam}
+            semester={semester}
           />
         </div>
       </div>

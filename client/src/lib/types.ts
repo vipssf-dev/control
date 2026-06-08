@@ -21,7 +21,7 @@ export interface ExamRecord {
 }
 
 export const STEP_LABELS: Record<ExamStep, string> = {
-  questionsExport: "تصدير الأسئلة",
+  questionsExport: "تسليم الفصل الأول",
   photocopying: "التصوير",
   grading: "التصحيح",
   reviewing: "المراجعة",
@@ -30,6 +30,13 @@ export const STEP_LABELS: Record<ExamStep, string> = {
   randomSample: "العينة العشوائية",
   reportSent: "إرسال التقارير للإدارة",
 };
+
+export function getStepLabels(semester: string): Record<ExamStep, string> {
+  return {
+    ...STEP_LABELS,
+    questionsExport: semester === "2" ? "تسليم الفصل الثاني" : "تسليم الفصل الأول",
+  };
+}
 
 export const MOCK_DATA: ExamRecord[] = [
   {

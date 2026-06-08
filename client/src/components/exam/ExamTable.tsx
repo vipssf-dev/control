@@ -1,4 +1,4 @@
-import { ExamRecord, ExamStep, STEP_LABELS } from "@/lib/types";
+import { ExamRecord, ExamStep, getStepLabels } from "@/lib/types";
 import {
   Table,
   TableBody,
@@ -16,6 +16,7 @@ interface ExamTableProps {
   exams: ExamRecord[];
   onUpdateStep: (id: string, step: ExamStep, checked: boolean) => void;
   onDelete: (id: string) => void;
+  semester?: string;
 }
 
 function getProgressColor(progress: number): string {
@@ -27,8 +28,9 @@ function getProgressColor(progress: number): string {
   return "bg-green-500";
 }
 
-export function ExamTable({ exams, onUpdateStep, onDelete }: ExamTableProps) {
-  const steps = Object.keys(STEP_LABELS) as ExamStep[];
+export function ExamTable({ exams, onUpdateStep, onDelete, semester = "1" }: ExamTableProps) {
+  const stepLabels = getStepLabels(semester);
+  const steps = Object.keys(stepLabels) as ExamStep[];
 
   const calculateExamProgress = (exam: ExamRecord): number => {
     const completed = Object.values(exam.steps).filter(Boolean).length;
@@ -50,7 +52,7 @@ export function ExamTable({ exams, onUpdateStep, onDelete }: ExamTableProps) {
                 <TableHead className="w-[90px] text-right font-bold">المصدر</TableHead>
                 {steps.map((step) => (
                   <TableHead key={step} className="text-center font-bold text-xs px-1 w-[70px]">
-                    {STEP_LABELS[step]}
+                    {stepLabels[step]}
                   </TableHead>
                 ))}
                 <TableHead className="w-[100px] text-center font-bold">الإجراءات</TableHead>
@@ -182,7 +184,7 @@ export function ExamTable({ exams, onUpdateStep, onDelete }: ExamTableProps) {
                         )}
                       />
                       <span className="text-[10px] text-muted-foreground text-center leading-tight">
-                        {STEP_LABELS[step]}
+                        {stepLabels[step]}
                       </span>
                     </div>
                   ))}
