@@ -5,8 +5,12 @@ import { useExams } from "@/hooks/use-exams";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Activity, CheckCircle, Clock } from "lucide-react";
 
-export default function Dashboard() {
-  const { exams, addExam, updateStep, deleteExam } = useExams();
+interface DashboardProps {
+  semester?: string;
+}
+
+export default function Dashboard({ semester = "1" }: DashboardProps) {
+  const { exams, addExam, updateStep, deleteExam } = useExams(semester);
 
   const totalExams = exams.length;
   const completedSteps = exams.reduce((acc, exam) => {
@@ -15,12 +19,16 @@ export default function Dashboard() {
   const totalSteps = totalExams * 8;
   const progress = totalSteps === 0 ? 0 : Math.round((completedSteps / totalSteps) * 100);
 
+  const semesterLabel = semester === "1"
+    ? "متابعة أعمال اختبارات الفصل الدراسي الأول 1447"
+    : "متابعة أعمال اختبارات الفصل الدراسي الثاني 1447";
+
   return (
-    <Layout>
+    <Layout semester={semester}>
       <div className="space-y-8 animate-in fade-in duration-500">
         <div className="flex flex-col gap-6">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-primary">متابعة أعمال اختبارات الفصل الدراسي الأول 1447</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-primary">{semesterLabel}</h1>
             <p className="text-lg text-muted-foreground mt-1">
               مدرسة الرياض الابتدائية
             </p>
@@ -39,7 +47,7 @@ export default function Dashboard() {
               <Activity className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{totalExams}</div>
+              <div className="text-2xl font-bold" data-testid="total-exams">{totalExams}</div>
               <p className="text-xs text-muted-foreground">
                 اختبار مسجل في النظام
               </p>
@@ -54,7 +62,7 @@ export default function Dashboard() {
               <CheckCircle className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{progress}%</div>
+              <div className="text-2xl font-bold" data-testid="progress-percent">{progress}%</div>
               <div className="h-2 w-full bg-secondary mt-2 rounded-full overflow-hidden">
                 <div 
                   className="h-full bg-green-500 transition-all duration-500" 
@@ -72,7 +80,7 @@ export default function Dashboard() {
               <Clock className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{totalSteps - completedSteps}</div>
+              <div className="text-2xl font-bold" data-testid="remaining-tasks">{totalSteps - completedSteps}</div>
               <p className="text-xs text-muted-foreground">
                 خطوة عمل تحتاج للمتابعة
               </p>

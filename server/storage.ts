@@ -12,8 +12,7 @@ const pool = new Pool({
 const db = drizzle(pool);
 
 export interface IStorage {
-  // Exam operations
-  getExams(): Promise<Exam[]>;
+  getExams(semester: string): Promise<Exam[]>;
   getExam(id: string): Promise<Exam | undefined>;
   createExam(exam: InsertExam): Promise<Exam>;
   updateExam(id: string, exam: Partial<InsertExam>): Promise<Exam | undefined>;
@@ -21,8 +20,8 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
-  async getExams(): Promise<Exam[]> {
-    return await db.select().from(exams);
+  async getExams(semester: string): Promise<Exam[]> {
+    return await db.select().from(exams).where(eq(exams.semester, semester));
   }
 
   async getExam(id: string): Promise<Exam | undefined> {

@@ -9,10 +9,11 @@ export async function registerRoutes(
   app: Express
 ): Promise<Server> {
   
-  // Get all exams
+  // Get all exams (filtered by semester)
   app.get("/api/exams", async (req, res) => {
     try {
-      const exams = await storage.getExams();
+      const semester = (req.query.semester as string) || "1";
+      const exams = await storage.getExams(semester);
       res.json(exams);
     } catch (error) {
       console.error("Error fetching exams:", error);

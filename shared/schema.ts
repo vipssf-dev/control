@@ -5,6 +5,7 @@ import { z } from "zod";
 
 export const exams = pgTable("exams", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  semester: text("semester").notNull().default("1"),
   day: text("day").notNull(),
   date: text("date").notNull(),
   grade: text("grade").notNull(),

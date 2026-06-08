@@ -14,6 +14,7 @@ const GRADE_ORDER = [
 function mapExamFromDB(dbExam: any) {
   return {
     id: dbExam.id,
+    semester: dbExam.semester,
     day: dbExam.day,
     date: dbExam.date,
     grade: dbExam.grade,
@@ -34,6 +35,7 @@ function mapExamFromDB(dbExam: any) {
 
 function mapExamToDB(exam: any) {
   return {
+    semester: exam.semester,
     day: exam.day,
     date: exam.date,
     grade: exam.grade,
@@ -64,14 +66,14 @@ function sortExams(exams: any[]) {
   });
 }
 
-export function useExams() {
+export function useExams(semester: string = "1") {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
   const { data: exams = [] } = useQuery({
-    queryKey: ['exams'],
+    queryKey: ['exams', semester],
     queryFn: async () => {
-      const response = await fetch('/api/exams');
+      const response = await fetch(`/api/exams?semester=${semester}`);
       if (!response.ok) throw new Error('Failed to fetch exams');
       const data = await response.json();
       return sortExams(data.map(mapExamFromDB));
@@ -83,13 +85,13 @@ export function useExams() {
       const response = await fetch('/api/exams', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(mapExamToDB(exam)),
+        body: JSON.stringify({ ...mapExamToDB(exam), semester }),
       });
       if (!response.ok) throw new Error('Failed to create exam');
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['exams'] });
+      queryClient.invalidateQueries({ queryKey: ['exams', semester] });
       toast({
         title: "تمت الإضافة",
         description: "تم إضافة الاختبار الجديد بنجاح",
@@ -108,10 +110,10 @@ export function useExams() {
       return response.json();
     },
     onMutate: async ({ examId, step, value }) => {
-      await queryClient.cancelQueries({ queryKey: ['exams'] });
-      const previousExams = queryClient.getQueryData(['exams']);
+      await queryClient.cancelQueries({ queryKey: ['exams', semester] });
+      const previousExams = queryClient.getQueryData(['exams', semester]);
       
-      queryClient.setQueryData(['exams'], (old: any[]) => {
+      queryClient.setQueryData(['exams', semester], (old: any[]) => {
         if (!old) return old;
         return old.map(exam => {
           if (exam.id === examId) {
@@ -131,11 +133,11 @@ export function useExams() {
     },
     onError: (err, variables, context) => {
       if (context?.previousExams) {
-        queryClient.setQueryData(['exams'], context.previousExams);
+        queryClient.setQueryData(['exams', semester], context.previousExams);
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['exams'] });
+      queryClient.invalidateQueries({ queryKey: ['exams', semester] });
     },
   });
 
@@ -147,7 +149,7 @@ export function useExams() {
       if (!response.ok) throw new Error('Failed to delete exam');
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['exams'] });
+      queryClient.invalidateQueries({ queryKey: ['exams', semester] });
       toast({
         title: "تم الحذف",
         description: "تم حذف سجل الاختبار",
